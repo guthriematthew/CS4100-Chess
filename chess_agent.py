@@ -53,7 +53,7 @@ class MinimaxAgent(Agent):
 
     def get_next_move(self, chess_board):
         print("minimax move")
-        _, move = self.minimax(chess_board, self.depth * 2, self.color)
+        _, move = self.minimax(chess_board, self.depth * 2, self.color, -1 * math.inf, math.inf)
         return str(move)
 
     def nextAgent(self, color):
@@ -64,30 +64,40 @@ class MinimaxAgent(Agent):
         board.push(move)
         return board
 
-    def minimax(self, chess_board, depth, color):
-        if depth == 0 or game_over(chess_board):
-            return self.evaluationFunction(chess_board), None
+    #TODO Need to get a list of legal moves for a specific color, not all legal moves
 
-        if color == chess.WHITE: 
+    def minimax(self, chess_board, depth, color, alpha, beta):
+        if depth == 0 or game_over(chess_board):
+            return self.evaluationFunction(chess_board, self.color), None
+
+        # Maximize for yourself
+        if color == self.color: 
             v = -1 * math.inf
             best_move = None
             for move in list(chess_board.legal_moves):
                 childState = self.generate_successor(chess_board, move)
                 nextUp = self.nextAgent(color)
-                new_v, _ = self.minimax(childState, depth - 1, nextUp)
+                new_v, _ = self.minimax(childState, depth - 1, nextUp, alpha, beta)
+                alpha = max(alpha, new_v)
                 if new_v > v:
                     v = new_v
                     best_move = move
+                if beta < alpha:
+                    break
             return v, best_move
 
+        # Maximize for yourself
         else:
             v = math.inf
             best_move = None
             for move in list(chess_board.legal_moves):
                 childState = self.generate_successor(chess_board, move)
                 nextUp = self.nextAgent(color)
-                new_v, _ = self.minimax(childState, depth - 1, nextUp)
+                new_v, _ = self.minimax(childState, depth - 1, nextUp, alpha, beta)
                 if new_v < v:
                     v = new_v
                     best_move = move
+                beta = min(beta, new_v)
+                if beta < alpha:
+                    break
             return v, best_move
