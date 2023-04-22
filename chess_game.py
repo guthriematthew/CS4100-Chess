@@ -2,6 +2,7 @@ import chess
 import random
 import copy
 import enum
+from chess_utils import game_over
 
 class ChessColors(enum.Enum):
     White = "white"
@@ -94,9 +95,10 @@ class ChessGame(object):
         return outcome
 
     def game_over(self):
-        return self.board.is_checkmate() \
-        or self.board.is_stalemate() \
-        or self.board.is_insufficient_material()
+        return game_over(self.board)
+
+    def get_legal_actions():
+        return self.board.legal_moves()
 
     @property
     def num_agents(self):
