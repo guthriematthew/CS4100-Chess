@@ -1,20 +1,21 @@
 from chess_game import ChessGame
 from chess_agent import *
 import chess
-from stockfish import Stockfish
+import random
+from chess_eval import *
+#from stockfish import Stockfish
 
 start_position = "3k4/8/8/5Q2/4K3/8/8/8 w - - 0 1"
 
-game = ChessGame(starting_position=start_position)
+midgame="r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1"
+
+game = ChessGame()
+
 white = WhiteScholarAgent()
 black = BlackScholarAgent()
-stockfish = Stockfish(path="/usr/local/bin/stockfish")
+#stockfish = Stockfish(path="/usr/local/bin/stockfish")
 
-def f(board, color):
-    
-    return -1
-
-def stock_f(board, color):
+"""def stock_f(board, color):
     stockfish.set_fen_position(board.fen())
     eval = stockfish.get_evaluation()
     if color == chess.BLACK:
@@ -22,10 +23,10 @@ def stock_f(board, color):
     else:
         val = eval['value']
     return val
+"""
 
-
-minimaxW = MinimaxAgent(chess.WHITE, stock_f, depth=2)
-minimaxB = MinimaxAgent(chess.BLACK, stock_f, depth=2)
+minimaxW = MinimaxAgent(chess.WHITE, eval_material, depth=4)
+minimaxB = MinimaxAgent(chess.BLACK, eval_material, depth=4)
 
 game.register_agent(minimaxW, True)
 game.register_agent(minimaxB, False)
