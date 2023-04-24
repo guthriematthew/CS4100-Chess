@@ -25,8 +25,8 @@ black = BlackScholarAgent()
     return val
 """
 
-minimaxW = MinimaxAgent(chess.WHITE, eval_material, depth=4)
-minimaxB = MinimaxAgent(chess.BLACK, eval_material, depth=4)
+minimaxW = MinimaxAgent(chess.WHITE, eval_material, depth=4, moveTime=5)
+minimaxB = MinimaxAgent(chess.BLACK, eval_material, depth=4, moveTime=5)
 
 game.register_agent(minimaxW, True)
 game.register_agent(minimaxB, False)

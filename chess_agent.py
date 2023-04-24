@@ -45,20 +45,21 @@ class BlackScholarAgent(Agent):
 
 class MinimaxAgent(Agent):
 
-    def __init__(self, color, evaluationFunction, depth=None):
+    def __init__(self, color, evaluationFunction, depth=None, moveTime=None):
         if depth is None:
             depth = 1
 
         self.color = color
         self.evaluationFunction = evaluationFunction
         self.depth = depth
+        self.moveTime = moveTime
 
     def get_next_move(self, chess_board):
         print("minimax move")
         start = time.time()
-        _, move, num_eval = self.minimax(chess_board, self.depth, self.color, -1 * math.inf, math.inf)
+        _, move, num_eval = self.minimax(chess_board, self.depth, self.color, -1 * math.inf, math.inf, start)
         end = time.time()
-        print(f"Minimax took {end-start}, and evaluated {num_eval} positions")
+        print(f"Minimax took {end-start}, and evaluated {num_eval} positions\nMove: {str(move)}")
         return str(move)
 
     def nextAgent(self, color):
@@ -69,7 +70,7 @@ class MinimaxAgent(Agent):
         board.push(move)
         return board
 
-    def minimax(self, chess_board, depth, color, alpha, beta):
+    def minimax(self, chess_board, depth, color, alpha, beta, startTime):
         if depth == 0 or game_over(chess_board):
             return self.evaluationFunction(chess_board, self.color), None, 1
 
@@ -84,13 +85,15 @@ class MinimaxAgent(Agent):
             for move in ordered_moves:
                 childState = self.generate_successor(chess_board, move)
                 nextUp = self.nextAgent(color)
-                new_v, _, child_eval_acc = self.minimax(childState, depth - 1, nextUp, alpha, beta)
+                new_v, _, child_eval_acc = self.minimax(childState, depth - 1, nextUp, alpha, beta, startTime=startTime)
                 eval_acc += child_eval_acc
                 alpha = max(alpha, new_v)
                 if new_v > v:
                     v = new_v
                     best_move = move
                 if beta < alpha:
+                    break
+                if self.moveTime and time.time() - startTime > self.moveTime:
                     break
             return v, best_move, eval_acc
 
@@ -102,7 +105,7 @@ class MinimaxAgent(Agent):
             for move in ordered_moves:
                 childState = self.generate_successor(chess_board, move)
                 nextUp = self.nextAgent(color)
-                new_v, _, child_eval_acc = self.minimax(childState, depth - 1, nextUp, alpha, beta)
+                new_v, _, child_eval_acc = self.minimax(childState, depth - 1, nextUp, alpha, beta, startTime=startTime)
                 eval_acc += child_eval_acc
                 if new_v < v:
                     v = new_v
