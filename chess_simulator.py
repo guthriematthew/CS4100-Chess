@@ -156,21 +156,32 @@ class ChessSimulator(object):
         
         
 
-    def record_quality(self, board, stockfish_elo, record_agent, opponent_agent):
+    @staticmethod
+    def record_quality(board, stockfish_elo, record_agent, opponent_agent, n=None):
         board = board.copy()
         stockfish_agent = StockfishAgent(stockfish_elo)
 
         game_record = [] # Holds (board, stockfish_move, agent_move, agent_move_grade) tuples
 
         while(not game_over(board)):
-            agent_move, agent_move_info = record_agent.get_next_move(board)
-            stockfish_move, _ = stockfish_agent.get_next_move(board)
-            agent_move_grade = stockfish_agent.grade_move(board, move)
-            game_record.append((str(board), stockfish_move, agent_move, agent_move_grade))
-            board.push(stockfish_move)
+            agent_move_info = record_agent.get_next_move(board)
+            agent_move = agent_move_info['move']
+            stockfish_move_info = stockfish_agent.get_next_move(board)
+            stockfish_move = stockfish_move_info['move']
 
-            m, _ = opponent_agent.get_next_move(board)
-            board.push(m)
+            if n is not None:
+                agent_move_grade = stockfish_agent.grade_move(board, agent_move)
+            else:
+                agent_move_grade = stockfish_agent.grade_move(board, agent_move, n=n)
+            game_record.append((str(board), stockfish_move, agent_move, agent_move_grade))
+            board.push(chess.Move.from_uci(stockfish_move))
+            print(f"Stockfish Move: {stockfish_move}, Agent Move: {agent_move}, Agent Move Grade: {agent_move_grade}")
+            print(board)
+            print("===============")
+
+            m_info = opponent_agent.get_next_move(board)
+            m = m_info['move']
+            board.push(chess.Move.from_uci(m))
 
         return game_record
     

@@ -2,8 +2,9 @@ import chess
 import math
 import bisect
 import random
-from chess_utils import game_over
+from chess_utils import game_over, STOCKFISH_PATH, DEFAULT_DEPTH
 from collections import Counter
+from stockfish import Stockfish
 
 PIECE_VALUE = {
     chess.PAWN: 100,
@@ -15,6 +16,8 @@ PIECE_VALUE = {
 }
 
 PIECE_SYMBOLS = [None, "p", "n", "b", "r", "q", "k"]
+
+SIMULATION_EVALS = ['eval_material', 'eval_material_and_mobility', 'eval_material_and_mobility_and_cc', 'complete_eval']
 
 PAWN_PIECESQUARE = [0,  0,  0,  0,  0,  0,  0,  0,
                           5, 10, 10,-20,-20, 10, 10,  5,
@@ -89,6 +92,12 @@ def order_moves(board, legal_moves):
         bisect.insort(ordered_moves, (move, move_score), key=lambda x: x[1])
     
     return ordered_moves
+
+def order_moves_stockfish(board, legal_moves, depth=DEFAULT_DEPTH):
+    stockfish = Stockfish(path=STOCKFISH_PATH, depth=depth, parameters={})
+    stockfish.set_fen_position(board.fen())
+    ordered_moves = stockfish.get_top_moves(len(legal_moves))
+    return [(chess.Move.from_uci(x["Move"]), x["Centipawn"]) for x in ordered_moves]
 
 def eval_random(board, color):
     return random.randint(-100, 100)
@@ -308,11 +317,6 @@ def evaluate_center_control(board, color, endgameBias=False):
     evaluation += 5 * white_center_control if color == chess.WHITE else 5 * black_center_control
 
     return evaluation
-
-
-
-    
-
 
 
 

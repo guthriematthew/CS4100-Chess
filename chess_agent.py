@@ -1,7 +1,7 @@
 import abc
 import chess
-from chess_utils import game_over
-from chess_eval import order_moves
+from chess_utils import game_over, STOCKFISH_PATH, DEFAULT_DEPTH
+from chess_eval import order_moves, order_moves_stockfish
 import math
 import time
 import bisect
@@ -9,10 +9,6 @@ import random
 from stockfish import Stockfish
 import os
 from chess_utils import STOCKFISH_PATH
-
-DEFAULT_DEPTH = 3
-
-
 
 #Abstract Class for Agents
 class Agent(metaclass=abc.ABCMeta):
@@ -172,7 +168,7 @@ class MinimaxAgent(Agent):
             _, best_move, new_num_eval, best_moves = self.minimax(chess_board, i, self.color, alpha, beta, startTime, ordered_moves=best_moves)
             num_eval += new_num_eval
             if self.times_up(startTime):
-                return best_move, num_eval
+                return v, best_move, num_eval
         return v, best_move, num_eval
             
     def minimax(self, chess_board, depth, color, alpha, beta, startTime, ordered_moves=None):

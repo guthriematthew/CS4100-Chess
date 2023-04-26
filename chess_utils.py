@@ -7,9 +7,10 @@ if os.name == "posix":
     print(f'\n\nLOGIN{os.getlogin()}\n\n')
     if os.getlogin() == 'liorzippel':
         STOCKFISH_PATH = "/usr/local/bin/stockfish"
-    else:
-        # STOCKGISH_PATH = "/usr/local/bin/stockfish"
+    elif os.getlogin() == 'gunther':
         STOCKFISH_PATH = "/opt/homebrew/opt/stockfish/bin/stockfish"
+    else:
+        STOCKFISH_PATH = None 
 else:
     STOCKFISH_PATH = None
 
