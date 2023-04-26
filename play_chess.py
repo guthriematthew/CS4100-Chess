@@ -15,7 +15,8 @@ endgame="8/8/5p2/1P1K1k2/8/2r5/8/7R w - - 0 0"
 
 mate_1_endgame = "3k4/6R1/3K4/8/8/8/8/8 w - - 0 1"
 mate_2_endgame = "1k6/6R1/2K5/8/8/8/8/8 b - - 0 1"
-game = ChessGame(white_to_move=True)
+mate_3_endgame = "k7/6R1/2K5/8/8/8/8/8 w - - 0 1"
+game = ChessGame(white_to_move=True, starting_position=None)
 # game = ChessGame()
 
 
@@ -37,6 +38,7 @@ minimaxW = MinimaxAgent(chess.WHITE, eval_material_and_mobility, depth=3, iterat
 minimaxB = MinimaxAgent(chess.BLACK, eval_material_and_mobility, depth=3, iterate=True)
 stockf_1000 = StockfishAgent(1000)
 stockf_1500 = StockfishAgent(1500)
+
 
 game.register_agent(minimaxW, chess.WHITE)
 game.register_agent(stockf_1000, chess.BLACK)
