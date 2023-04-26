@@ -235,10 +235,3 @@ def eval_material_and_mobility(board, color):
     #evaluation = abs(white_material - black_material) * abs(white_mobility - black_mobility)
     return endgame_bias + evaluation
     #return evaluation
-
-
-
-"""
-Eval(board) = 100*(number of white queens - number of black queens) + 9*(number of white rooks - number of black rooks) + 5*(number of white bishops - number of black bishops) + 3*(number of white knights - number of black knights) + 1*(number of white pawns - number of black pawns) + 0.1*(sum of mobility scores for white pieces - sum of mobility scores for black pieces) + 0.5*(number of safe squares for white king - number of safe squares for black king) + 0.1*(sum of center control scores for white - sum of center control scores for black)
-"""
-

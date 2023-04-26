@@ -71,12 +71,13 @@ class MinimaxAgent(Agent):
         alpha = -1 * math.inf
         beta = math.inf
         if self.iterate: 
-            move, num_eval = self.iterative_minimax(chess_board, self.depth, alpha, beta, start)
+            v, move, num_eval = self.iterative_minimax(chess_board, self.depth, alpha, beta, start)
         else:
-            _, move, num_eval, _ = self.minimax(chess_board, self.depth, self.color, alpha, beta, start)
+            v, move, num_eval, _ = self.minimax(chess_board, self.depth, self.color, alpha, beta, start)
         end = time.time()
         prefix = f"Iterative Minimax to depth {self.depth}" if self.iterate else f"Minimax to depth {self.depth}"
-        print(f"{prefix} took {end-start}, and evaluated {num_eval} positions\nMove: {str(move)}")
+        print(f"{prefix} took {end-start}, and evaluated {num_eval} positions")
+        print(f"Move: {str(move)} with score {v}")
         return str(move)
 
     def nextAgent(self, color):
@@ -92,11 +93,11 @@ class MinimaxAgent(Agent):
         best_move = None
         num_eval = 0
         for i in range(1, self.depth+1):
-            _, best_move, new_num_eval, best_moves = self.minimax(chess_board, i, self.color, alpha, beta, startTime, ordered_moves=best_moves)
+            v, best_move, new_num_eval, best_moves = self.minimax(chess_board, i, self.color, alpha, beta, startTime, ordered_moves=best_moves)
             num_eval += new_num_eval
             if self.times_up(startTime):
                 return best_move, num_eval
-        return best_move, num_eval
+        return v, best_move, num_eval
             
     def minimax(self, chess_board, depth, color, alpha, beta, startTime, ordered_moves=None):
         """
@@ -139,7 +140,7 @@ class MinimaxAgent(Agent):
                 if self.times_up(startTime):
                     break
             #print(f"Maximize: {v, best_move, eval_acc, best_moves}")
-            return v, best_move, eval_acc, best_moves
+            return v-1, best_move, eval_acc, best_moves
 
         # Minimize for opponent
         else:
@@ -161,4 +162,4 @@ class MinimaxAgent(Agent):
                 if self.times_up(startTime):
                     break
             #print(f"Minimize: {v, best_move, eval_acc, best_moves}")
-            return v, best_move, eval_acc, best_moves
+            return v-1, best_move, eval_acc, best_moves
