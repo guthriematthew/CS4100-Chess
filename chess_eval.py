@@ -2,6 +2,8 @@ import chess
 import math
 import bisect
 import random
+from chess_utils import game_over
+from collections import Counter
 
 PIECE_VALUE = {
     chess.PAWN: 100,
@@ -9,7 +11,7 @@ PIECE_VALUE = {
     chess.BISHOP: 300,
     chess.ROOK: 500,
     chess.QUEEN: 900,
-    chess.KING: math.inf
+    chess.KING: 5000000000000
 }
 
 PIECE_SYMBOLS = [None, "p", "n", "b", "r", "q", "k"]
@@ -142,7 +144,7 @@ def order_moves(board, legal_moves):
 
         bisect.insort(ordered_moves, (move, move_score), key=lambda x: x[1])
     
-    return [x for x, y in ordered_moves]
+    return ordered_moves
 
 def eval_random(board, color):
     return random.randint(-100, 100)
@@ -179,13 +181,19 @@ def calc_pst(board, legal_moves):
     return pst_values
 
 # for every piece calculate the number of possible moves
-def total_mobility(board, legal_moves):
+def total_mobility(board, color, as_value=False):
+    board = board.copy()
+    board.turn = color
+    legal_moves = list(board.legal_moves)
     move_from_square = {}
     for move in legal_moves:
         from_sq = move.from_square
         number_moves_currently = move_from_square.get(from_sq, 0) + 1
-        move_from_square.update(from_sq, number_moves_currently)
-    return move_from_square
+        move_from_square.update({from_sq: number_moves_currently})
+    if not as_value:
+        return move_from_square
+    else:
+        return sum([move_from_square[x] for x in move_from_square])
 
 #knowing a move, find the mobility for that piece    
 def mobility_per_piece(move, mobility_dict):
@@ -216,6 +224,80 @@ def eval_material(board, color):
     white_material, black_material = total_material(board, as_value=True)
     color_bias = 1 if color == chess.WHITE else -1
     return color_bias * (white_material - black_material)
+
+def game_over_evaluation(board, color):
+    outcome = board.outcome()
+    if outcome.termination is not None and \
+        outcome.termination == chess.Termination.CHECKMATE \
+        and outcome.winner == color:
+        return math.inf
+    else:
+        return -1 * math.inf
+
+def endgame_evaluation(board, color):
+    our_king_piecesquare_eg = KING_PIECESQUARE_EG_WHITE if color else KING_PIECESQUARE_EG_BLACK
+    our_king = board.king(color)
+
+    their_king_piecesquare_eg = KING_PIECESQUARE_EG_WHITE if not color else KING_PIECESQUARE_EG_BLACK
+    their_king = board.king(not color)
+
+    evaluation = 0
+    
+    # push our king to center
+    evaluation += our_king_piecesquare_eg[our_king]
+
+    # push opponent king to edge
+    evaluation += -1*their_king_piecesquare_eg[their_king]
+
+    # decrease distance between kings
+    evaluation -= abs(our_king - their_king)
+
+    return evaluation
+
+def eval_material_and_mobility(board, color):
+    board = board.copy()
+
+    if game_over(board):
+        game_over_evaluation(board, color)
+
+    white_material, black_material = total_material(board)
+    white_mobility = total_mobility(board, chess.WHITE, as_value=True)
+    black_mobility = total_mobility(board, chess.BLACK, as_value=True)
+
+    white_material = Counter([chess.Piece.from_symbol(x) for x in white_material])
+    black_material = Counter([chess.Piece.from_symbol(x) for x in black_material])
+
+    my_material, their_material = (white_material, black_material) if color else (black_material, white_material)
+    my_mobility, their_mobility = (white_mobility, black_mobility) if color else (black_mobility, white_mobility)
+
+    evaluation = 0
+
+    # Evaluate Material
+    evaluation += 100*(my_material[chess.QUEEN] - my_material[chess.QUEEN])
+    evaluation += 9*(my_material[chess.ROOK] - my_material[chess.ROOK])
+    evaluation += 5*(my_material[chess.BISHOP] - my_material[chess.BISHOP])
+    evaluation += 3*(my_material[chess.KNIGHT] - my_material[chess.KNIGHT])
+    evaluation += 1*(my_material[chess.PAWN] - my_material[chess.PAWN])
+
+    # Evaluate Mobility
+    evaluation += 0.1*(my_mobility - their_mobility)
+    endgame_bias = 1/(white_material.total() + black_material.total()) * endgame_evaluation(board, color)
+    print(evaluation, endgame_bias, evaluation * endgame_bias)
+    #evaluation = abs(white_material - black_material) * abs(white_mobility - black_mobility)
+    return endgame_bias * evaluation
+    #return evaluation
+
+
+
+"""
+Eval(board) = 100*(number of white queens - number of black queens) + 9*(number of white rooks - number of black rooks) + 5*(number of white bishops - number of black bishops) + 3*(number of white knights - number of black knights) + 1*(number of white pawns - number of black pawns) + 0.1*(sum of mobility scores for white pieces - sum of mobility scores for black pieces) + 0.5*(number of safe squares for white king - number of safe squares for black king) + 0.1*(sum of center control scores for white - sum of center control scores for black)
+"""
+
+
+    
+
+
+
 
 
         

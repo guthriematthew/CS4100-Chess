@@ -4,6 +4,7 @@ from chess_utils import game_over
 from chess_eval import order_moves
 import math
 import time
+import bisect
 
 #Abstract Class for Agents
 class Agent(metaclass=abc.ABCMeta):
@@ -43,23 +44,40 @@ class BlackScholarAgent(Agent):
         self.counter += 1
         return move
 
+class OutOfTimeException(Exception):
+    "The Minimax Agent ran out of time to compute"
+    pass
+
 class MinimaxAgent(Agent):
 
-    def __init__(self, color, evaluationFunction, depth=None, moveTime=None):
+    def __init__(self, color, evaluationFunction, depth=None, moveTime=None, iterate=True):
         if depth is None:
             depth = 1
+        if moveTime is None:
+            moveTime = math.inf
 
         self.color = color
         self.evaluationFunction = evaluationFunction
         self.depth = depth
         self.moveTime = moveTime
+        self.iterate = iterate
+
+    def times_up(self, startTime):
+        return time.time() - startTime > self.moveTime
 
     def get_next_move(self, chess_board):
         print("minimax move")
         start = time.time()
-        _, move, num_eval = self.minimax(chess_board, self.depth, self.color, -1 * math.inf, math.inf, start)
+        alpha = -1 * math.inf
+        beta = math.inf
+        if self.iterate: 
+            move, num_eval = self.iterative_minimax(chess_board, self.depth, alpha, beta, start)
+        else:
+            color = self.color if self.depth % 2 == 0 else not self.color
+            _, move, num_eval, _ = self.minimax(chess_board, self.depth, color, alpha, beta, start)
         end = time.time()
-        print(f"Minimax took {end-start}, and evaluated {num_eval} positions\nMove: {str(move)}")
+        prefix = f"Iterative Minimax to depth {self.depth}" if self.iterate else f"Minimax to depth {self.depth}"
+        print(f"{prefix} took {end-start}, and evaluated {num_eval} positions\nMove: {str(move)}")
         return str(move)
 
     def nextAgent(self, color):
@@ -70,22 +88,49 @@ class MinimaxAgent(Agent):
         board.push(move)
         return board
 
-    def minimax(self, chess_board, depth, color, alpha, beta, startTime):
+    def iterative_minimax(self, chess_board, depth, alpha, beta, startTime):
+        best_moves = None
+        best_move = None
+        num_eval = 0
+        for i in range(1, self.depth+1):
+            color = self.color if i % 2 == 0 else not self.color
+            _, best_move, new_num_eval, best_moves = self.minimax(chess_board, i, color, alpha, beta, startTime, ordered_moves=best_moves)
+            num_eval += new_num_eval
+            if self.times_up(startTime):
+                return best_move, num_eval
+        return best_move, num_eval
+            
+    def minimax(self, chess_board, depth, color, alpha, beta, startTime, ordered_moves=None):
+        """
+        Performs minimax with alpha beta pruning to the given depth, or until the given start time has been reached.
+        Returns: Final Evaluation, Best Move, Number of States Evaluated, Ordered List-Of [(Final Evaluation, Best Move)] Tuples
+        """
+        if ordered_moves is None:
+            legal_moves = list(chess_board.legal_moves)
+            ordered_moves = order_moves(chess_board, legal_moves)
+
         if depth == 0 or game_over(chess_board):
-            return self.evaluationFunction(chess_board, self.color), None, 1
+            v = self.evaluationFunction(chess_board, self.color)
+            move = None
+            return v, move, 1, [v, move]
 
-        legal_moves = list(chess_board.legal_moves)
-        ordered_moves = order_moves(chess_board, legal_moves)
+        if depth == self.depth and False:
+            my_moves = [x[0] for x in ordered_moves]
+            board_moves = list(chess_board.legal_moves)
+            print(my_moves)
+            print(board_moves)
 
+        best_moves = []
         # Maximize for yourself
         if color == self.color: 
             v = -1 * math.inf
             best_move = None
             eval_acc = 0
-            for move in ordered_moves:
+            for move, _ in ordered_moves:
                 childState = self.generate_successor(chess_board, move)
                 nextUp = self.nextAgent(color)
-                new_v, _, child_eval_acc = self.minimax(childState, depth - 1, nextUp, alpha, beta, startTime=startTime)
+                new_v, _, child_eval_acc, _ = self.minimax(childState, depth - 1, nextUp, alpha, beta, startTime=startTime)
+                bisect.insort(best_moves, (move, new_v), key=lambda x: x[1])
                 eval_acc += child_eval_acc
                 alpha = max(alpha, new_v)
                 if new_v > v:
@@ -93,19 +138,21 @@ class MinimaxAgent(Agent):
                     best_move = move
                 if beta < alpha:
                     break
-                if self.moveTime and time.time() - startTime > self.moveTime:
+                if self.times_up(startTime):
                     break
-            return v, best_move, eval_acc
+            #print(f"Maximize: {v, best_move, eval_acc, best_moves}")
+            return v, best_move, eval_acc, best_moves
 
         # Minimize for opponent
         else:
             v = math.inf
             best_move = None
             eval_acc = 0
-            for move in ordered_moves:
+            for move, _ in ordered_moves:
                 childState = self.generate_successor(chess_board, move)
                 nextUp = self.nextAgent(color)
-                new_v, _, child_eval_acc = self.minimax(childState, depth - 1, nextUp, alpha, beta, startTime=startTime)
+                new_v, _, child_eval_acc, _ = self.minimax(childState, depth - 1, nextUp, alpha, beta, startTime=startTime)
+                bisect.insort(best_moves, (move, new_v), key=lambda x: -1*x[1])
                 eval_acc += child_eval_acc
                 if new_v < v:
                     v = new_v
@@ -113,4 +160,7 @@ class MinimaxAgent(Agent):
                 beta = min(beta, new_v)
                 if beta < alpha:
                     break
-            return v, best_move, eval_acc
+                if self.times_up(startTime):
+                    break
+            #print(f"Minimize: {v, best_move, eval_acc, best_moves}")
+            return v, best_move, eval_acc, best_moves

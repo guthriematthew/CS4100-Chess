@@ -12,12 +12,13 @@ STARTING_AGENTS = {chess.WHITE: None, chess.BLACK: None}
 
 class ChessGame(object):
 
-    def __init__(self, starting_position=None):
+    def __init__(self, starting_position=None, white_to_move=True):
         if not starting_position:
             starting_position = chess.STARTING_BOARD_FEN
 
         self.board = chess.Board(starting_position)
-        self.white_to_move = True
+        self.board.turn = white_to_move
+        self.white_to_move = white_to_move
         self._agents = copy.deepcopy(STARTING_AGENTS)
 
     def register_agent(self, agent, as_white):
@@ -73,6 +74,9 @@ class ChessGame(object):
 
         display_buffer = "==============="
         print(display_buffer)
+        print("Starting Position:")
+        print(self.board)
+        print(display_buffer)
 
         while(not self.game_over()):
             if self.white_to_move:
@@ -87,10 +91,10 @@ class ChessGame(object):
             print(self.board)
             print(display_buffer)
 
-        outcome = self.board.outcome()
-        winner = "white" if outcome.winner else "black"
+        outcome = self.board.outcome(claim_draw=True)
+        result = outcome.result()
 
-        print(f"The game is over, {winner} wins!")
+        print(f"The game is over, result: {result}")
 
         return outcome
 
