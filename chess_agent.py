@@ -8,13 +8,11 @@ import bisect
 import random
 from stockfish import Stockfish
 import os
+from chess_utils import STOCKFISH_PATH
 
 DEFAULT_DEPTH = 3
 
-if os.name == "posix":
-    STOCKFISH_PATH = "/opt/homebrew/opt/stockfish/bin/stockfish"
-else:
-    STOCKFISH_PATH = None
+
 
 #Abstract Class for Agents
 class Agent(metaclass=abc.ABCMeta):
@@ -95,6 +93,9 @@ class StockfishAgent(Agent):
 
         self.stockfish = Stockfish(path=STOCKFISH_PATH, depth=depth, parameters={})
         self.stockfish.set_fen_position(board.fen())
+    
+    def __str__(self):
+        return 'stockfish_'+str(self.elo)
 
     def get_next_move(self, chess_board):
         self.stockfish.set_fen_position(chess_board.fen())
@@ -127,6 +128,12 @@ class MinimaxAgent(Agent):
         self.depth = depth
         self.moveTime = moveTime
         self.iterate = iterate
+
+    def __str__(self):
+        if self.iterate:
+            return "minimax_iterative_depth_" + str(self.depth)
+        else:
+            return "minimax_depth_" + str(self.depth)
 
     def times_up(self, startTime):
         return time.time() - startTime > self.moveTime

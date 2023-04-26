@@ -9,7 +9,7 @@ VALID_AGENTS = ['stockfish', 'minimax','minimax_iterative', 'random']
 
 ## I think the only input should actuall be two evals 
 # and the config rather than two agents
-class chess_simulator(object):
+class ChessSimulator(object):
 
     """
     Input:
@@ -18,8 +18,8 @@ class chess_simulator(object):
     config: tentative plan for how we want to pass analysis information to the simulator since it is liable to change
     -> current planned structure:
         {
-            agent1_name : ['minimax', 'stockfish', 'minimax-terate'],
-            agent2_name : ['minimax', 'stockfish', 'minimax-terate'],
+            agent1_name : ['minimax', 'stockfish', 'minimax_iterative'],
+            agent2_name : ['minimax', 'stockfish', 'minimax_iterative'],
             depth1 : int,
             depth2 : int,
             eval1 : ['material_mobility' ... ELO-for Stockfish],
@@ -54,8 +54,8 @@ class chess_simulator(object):
         self.white_agent1 = self.get_agent(self.agent1_name, chess.WHITE, eval=eval_material_and_mobility_and_cc, depth=4)
         self.black_agent1 = self.get_agent(self.agent1_name, chess.BLACK, eval=eval_material_and_mobility_and_cc, depth=4) 
 
-        self.white_agent2 = self.get_agent(self.agent2_name, chess.WHITE, eval=eval_material_and_mobility_and_cc, depth=4)
-        self.black_agent2 = self.get_agent(self.agent2_name, chess.BLACK, eval=eval_material_and_mobility_and_cc, depth=4) 
+        self.white_agent2 = self.get_agent(self.agent2_name, chess.WHITE, eval=1500, depth=4)
+        self.black_agent2 = self.get_agent(self.agent2_name, chess.BLACK, eval=1500, depth=4) 
 
     def get_agent(self, agent_name, color, eval, moveTime=None, depth=None):
         if agent_name not in VALID_AGENTS:
@@ -66,13 +66,33 @@ class chess_simulator(object):
             return MinimaxAgent(color=color, evaluationFunction=eval, depth=depth, moveTime=moveTime, iterate=True)
         elif agent_name == 'random':
             return RandomAgent()
-        else:
-            return
+        elif agent_name == 'stockfish':
+            return StockfishAgent(elo=eval, depth=depth)
+        
         ## Add stockfish agent when ready
                 
     
     def run_simulation(self):
+        games = {}
         for i in range(self.num_games):
+            if self.swap_colors and i%2 == 1:
+                games_out = self.simulate_game(whiteAgent=self.white_agent2, 
+                                                blackAgent=self.black_agent1,
+                                                starting_position=self.start_position,
+                                                white_to_move=self.white_to_move)
+            else:
+                games_out = self.simulate_game(whiteAgent=self.white_agent1, 
+                                                blackAgent=self.black_agent2,
+                                                starting_position=self.start_position,
+                                                white_to_move=self.white_to_move)
+            for key in games_out:
+                if key not in games:
+                    games[key] = [games_out[key]]
+                else:
+                    games[key].append(games_out[key])
+        
+        output = pd.DataFrame(games)
+        return output
 
 
 
@@ -94,14 +114,17 @@ class chess_simulator(object):
         else:
             white = 0.5
             black = 0.5
-        print(f"GAME TERMINATED WITH THE FOLLOWING MOVES {moves}")
-        return moves
+        # print(f"GAME TERMINATED WITH THE FOLLOWING MOVES {moves}")
+        output = {
+            'white': white,
+            'black': black,
+            'moves': moves,
+            'white_agent': str(whiteAgent),
+            'black_agent': str(blackAgent)
+        }
+        return output
         
         
-        outcomeDF = pd.DataFrame()
-        outcomeDF['white'] = white
-        outcomeDF['black'] = black
-        outcomeDF['whiteAgent']
 
     def record_quality(self, board, stockfish_elo, record_agent, opponent_agent):
         board = board.copy()
