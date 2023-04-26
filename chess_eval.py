@@ -195,11 +195,13 @@ def endgame_evaluation(board, color):
     return evaluation
 
 def complete_eval(board, color, endgameBias=False):
+    board2 = board.copy()
+    board2.turn = not board.color
     evaluation = 0
     evaluation += evaluate_material(board, color, endgameBias)
     evaluation += evaluate_mobility(board, color, endgameBias)
     evaluation += evaluate_center_control(board, color, endgameBias)
-    evaluation += calc_pst(board, board.legal_moves)
+    evaluation += (calc_pst(board, board.legal_moves) - calc_pst(board2, board2.legal_moves))
     return evaluation
 
 def eval_material_and_mobility(board, color, endgameBias=False):
