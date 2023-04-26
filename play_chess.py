@@ -38,9 +38,10 @@ minimaxW = MinimaxAgent(chess.WHITE, eval_material_and_mobility, depth=3, iterat
 minimaxB = MinimaxAgent(chess.BLACK, eval_material_and_mobility, depth=3, iterate=True)
 stockf_1000 = StockfishAgent(1000)
 stockf_1500 = StockfishAgent(1500)
+rand = RandomAgent()
 
 
 game.register_agent(minimaxW, chess.WHITE)
-game.register_agent(stockf_1000, chess.BLACK)
+game.register_agent(rand, chess.BLACK)
 game.play_game()
 

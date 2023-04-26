@@ -1,0 +1,5 @@
+,white,black,moves,white_agent,black_agent
+0,1,0,"[{'move': 'g7g8', 'evaluation': 10000000000009, 'num_eval': 1074, 'time': 0.6066958904266357}]",minimax_iterative_depth_4,stockfish_1500
+1,1,0,"[{'move': 'g7g8', 'evaluation': None, 'num_eval': -1, 'time': 0.0005538463592529297}]",stockfish_1500,minimax_iterative_depth_4
+2,1,0,"[{'move': 'g7g8', 'evaluation': 10000000000009, 'num_eval': 1074, 'time': 0.6060149669647217}]",minimax_iterative_depth_4,stockfish_1500
+3,1,0,"[{'move': 'g7g8', 'evaluation': None, 'num_eval': -1, 'time': 0.00031280517578125}]",stockfish_1500,minimax_iterative_depth_4

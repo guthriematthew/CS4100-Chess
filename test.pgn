@@ -1,0 +1,11 @@
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "minimax_depth_2"]
+[Black "stockfish_2000"]
+[Result "*"]
+[FEN "1k6/6R1/2K5/8/8/8/8/8 b - - 0 1"]
+[SetUp "1"]
+
+1... Ka8 2. Kd5 Kb8 3. Re7 Kc8 4. Kd4 Kd8 5. Rh7 Kc8 6. Re7 Kd8 7. Re6 Kd7 8. Rf6 Ke7 9. Rc6 Kd7 10. Rf6 Ke7 11. Rf7+ Kxf7 *

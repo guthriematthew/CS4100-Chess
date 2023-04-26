@@ -4,8 +4,19 @@ from chess_game import ChessGame
 from chess_agent import *
 import random
 from chess_eval import *
+import chess.pgn
 
 VALID_AGENTS = ['stockfish', 'minimax','minimax_iterative', 'random']
+SIMULATION_EVALS = ['eval_material', 
+                    'eval_material_and_mobility', 
+                    'eval_material_and_mobility_and_cc',
+                      'complete_eval']
+EVAL_LOOKUP = {
+    'eval_material' : eval_material,
+    'eval_material_and_mobility': eval_material_and_mobility,
+    'eval_material_and_mobility_and_cc': eval_material_and_mobility_and_cc,
+    'complete_eval' : complete_eval
+}
 
 ## I think the only input should actuall be two evals 
 # and the config rather than two agents
@@ -32,6 +43,7 @@ class ChessSimulator(object):
             random_seed: int,
             white_to_move : boolean=True,
             swap_colors : boolean=True
+            output_location : str
         }
     """
     def __init__(self, config):
@@ -49,14 +61,29 @@ class ChessSimulator(object):
         self.random_seed = None if 'random_seed' not in config else config['random_seed']
         self.white_to_move = True if 'white_to_move' not in config else config['white_to_move']
         self.swap_colors = True if 'swap_colors' not in config else config['swap_colors']
+        self.output_location = config['output_location']
+
+        if self.eval1_name in SIMULATION_EVALS and self.agent1_name != 'stockfish':
+            self.eval1 = EVAL_LOOKUP[self.eval1_name]
+        else:
+            assert type(self.eval1_name) == int
+            self.eval1 = self.eval1_name
+
+        if self.eval2_name in SIMULATION_EVALS and self.agent2_name != 'stockfish':
+            self.eval2 = EVAL_LOOKUP[self.eval1_name]
+        else:
+            assert type(self.eval2_name) == int
+            self.eval2 = self.eval2_name
 
         #FOR NOW SETTING EVAL TO MOVEMENT AND MOBILITY
-        self.white_agent1 = self.get_agent(self.agent1_name, chess.WHITE, eval=eval_material_and_mobility_and_cc, depth=4)
-        self.black_agent1 = self.get_agent(self.agent1_name, chess.BLACK, eval=eval_material_and_mobility_and_cc, depth=4) 
+        self.white_agent1 = self.get_agent(self.agent1_name, chess.WHITE, eval=self.eval1, depth=self.depth1)
+        self.black_agent1 = self.get_agent(self.agent1_name, chess.BLACK, eval=self.eval1, depth=self.depth1) 
 
-        self.white_agent2 = self.get_agent(self.agent2_name, chess.WHITE, eval=1500, depth=4)
-        self.black_agent2 = self.get_agent(self.agent2_name, chess.BLACK, eval=1500, depth=4) 
+        self.white_agent2 = self.get_agent(self.agent2_name, chess.WHITE, eval=self.eval2, depth=self.depth2)
+        self.black_agent2 = self.get_agent(self.agent2_name, chess.BLACK, eval=self.eval2, depth=self.depth2) 
 
+
+    
     def get_agent(self, agent_name, color, eval, moveTime=None, depth=None):
         if agent_name not in VALID_AGENTS:
             return
@@ -92,6 +119,9 @@ class ChessSimulator(object):
                     games[key].append(games_out[key])
         
         output = pd.DataFrame(games)
+        for key, row in output.iterrows():
+            self.to_pgn(row.white_agent, row.black_agent, row.moves)
+        # output.to_csv(self.output_location)
         return output
 
 
@@ -143,12 +173,21 @@ class ChessSimulator(object):
             board.push(m)
 
         return game_record
+    
 
-
-        
-
-
-
+    def to_pgn(self, white_agent_name, black_agent_name, moves):
+        game = chess.pgn.Game()
+        if self.start_position:
+            game.setup(self.start_position)
+        game.headers['White'] = white_agent_name
+        game.headers['Black'] = black_agent_name
+        node = game.add_main_variation(chess.Move.from_uci(moves[0]['move']))
+        for m in moves[1:]:
+            node = node.add_main_variation(chess.Move.from_uci(m['move']))
+            # node.comment = f"Eval : {m['evaluation']} Number of Evaluations {m['num_eval']} Time: {m['time']}"
+        with open('test.pgn', 'w') as f:
+            f.write(str(game))
+        print(game)
 
 
 

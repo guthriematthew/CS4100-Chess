@@ -67,7 +67,7 @@ class RandomAgent(Agent):
 
     def get_next_move(self, board):
         move = random.choice(list(board.legal_moves))
-        return move, {'move':move, 'evaluation':0, 'num_eval':0, 'time':0}
+        return {'move':str(move), 'evaluation':0, 'num_eval':0, 'time':0}
 
 class OutOfTimeException(Exception):
     "The Minimax Agent ran out of time to compute"

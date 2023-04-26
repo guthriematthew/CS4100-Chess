@@ -98,17 +98,17 @@ def calc_pst(board, legal_moves):
     pst_values = []
     for move in legal_moves:
         piece_type = board.piece_type_at(move.from_square)
-        piece_sym = piece_type.symbol().lower()
+        piece_sym = chess.piece_symbol(piece_type).lower()
         if piece_sym == "p":
-            pst_values.append(PAWN_PIECESQUARE.get(move.from_square))
+            pst_values.append(PAWN_PIECESQUARE[move.from_square])
         elif piece_sym == "n":
-            pst_values.append(KNIGHT_PIECESQUARE.get(move.from_square))
+            pst_values.append(KNIGHT_PIECESQUARE[move.from_square])
         elif piece_sym == "b":
-            pst_values.append(BISHOP_PIECESQUARE.get(move.from_square))
+            pst_values.append(BISHOP_PIECESQUARE[move.from_square])
         elif piece_sym == "q":
-            pst_values.append(QUEEN_PIECESQUARE.get(move.from_square))
+            pst_values.append(QUEEN_PIECESQUARE[move.from_square])
         elif piece_sym == "k":
-            pst_values.append(KING_PIECESQUARE_EG.get(move.from_square))
+            pst_values.append(KING_PIECESQUARE_EG[move.from_square])
         else:
             pst_values.append(0)
     return sum(pst_values)
@@ -196,7 +196,7 @@ def endgame_evaluation(board, color):
 
 def complete_eval(board, color, endgameBias=False):
     board2 = board.copy()
-    board2.turn = not board.color
+    board2.turn = not board.turn
     evaluation = 0
     evaluation += evaluate_material(board, color, endgameBias)
     evaluation += evaluate_mobility(board, color, endgameBias)
