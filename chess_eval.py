@@ -164,9 +164,9 @@ def game_over_evaluation(board, color):
     if outcome.termination is not None and \
         outcome.termination == chess.Termination.CHECKMATE \
         and outcome.winner == color:
-        return math.inf
+        return PIECE_VALUE[chess.KING]
     else:
-        return -1 * math.inf
+        return -1 * PIECE_VALUE[chess.KING]
 
 def endgame_evaluation(board, color):
     our_king_piecesquare_eg = KING_PIECESQUARE_EG
@@ -192,7 +192,7 @@ def eval_material_and_mobility(board, color):
     board = board.copy()
 
     if game_over(board):
-        game_over_evaluation(board, color)
+        return game_over_evaluation(board, color)
 
     white_material, black_material = total_material(board)
     white_mobility = total_mobility(board, chess.WHITE, as_value=True)
@@ -207,18 +207,19 @@ def eval_material_and_mobility(board, color):
     evaluation = 0
 
     # Evaluate Material
-    evaluation += 100*(my_material[chess.QUEEN] - my_material[chess.QUEEN])
-    evaluation += 9*(my_material[chess.ROOK] - my_material[chess.ROOK])
-    evaluation += 5*(my_material[chess.BISHOP] - my_material[chess.BISHOP])
-    evaluation += 3*(my_material[chess.KNIGHT] - my_material[chess.KNIGHT])
-    evaluation += 1*(my_material[chess.PAWN] - my_material[chess.PAWN])
+    evaluation += 100*(my_material[chess.QUEEN] - their_material[chess.QUEEN])
+    evaluation += 9*(my_material[chess.ROOK] - their_material[chess.ROOK])
+    evaluation += 5*(my_material[chess.BISHOP] - their_material[chess.BISHOP])
+    evaluation += 3*(my_material[chess.KNIGHT] - their_material[chess.KNIGHT])
+    evaluation += 1*(my_material[chess.PAWN] - their_material[chess.PAWN])
 
     # Evaluate Mobility
     evaluation += 0.1*(my_mobility - their_mobility)
     endgame_bias = 1/(white_material.total() + black_material.total()) * endgame_evaluation(board, color)
-    print(evaluation, endgame_bias, evaluation * endgame_bias)
+    endgame_bias *= 0 if my_material[chess.QUEEN] or their_material[chess.QUEEN] else 1
+    #print(evaluation, endgame_bias, evaluation * endgame_bias)
     #evaluation = abs(white_material - black_material) * abs(white_mobility - black_mobility)
-    return endgame_bias * evaluation
+    return endgame_bias + evaluation
     #return evaluation
 
 
