@@ -93,26 +93,25 @@ def order_moves(board, legal_moves):
 def eval_random(board, color):
     return random.randint(-100, 100)
 
-# can use the psts to multiply piece value by the corresponding table's value for the square its moving to
-# may need to mirror the psts and keep track of who's moving because values are not symmetrical
+# can use the psts to multiply piece value by the corresponding table's value for the square its moving from
 def calc_pst(board, legal_moves):
     pst_values = []
     for move in legal_moves:
         piece_type = board.piece_type_at(move.from_square)
         piece_sym = piece_type.symbol().lower()
         if piece_sym == "p":
-            pst_values.append(PAWN_PIECESQUARE.get(move.to_square))
+            pst_values.append(PAWN_PIECESQUARE.get(move.from_square))
         elif piece_sym == "n":
-            pst_values.append(KNIGHT_PIECESQUARE.get(move.to_square))
+            pst_values.append(KNIGHT_PIECESQUARE.get(move.from_square))
         elif piece_sym == "b":
-            pst_values.append(BISHOP_PIECESQUARE.get(move.to_square))
+            pst_values.append(BISHOP_PIECESQUARE.get(move.from_square))
         elif piece_sym == "q":
-            pst_values.append(QUEEN_PIECESQUARE.get(move.to_square))
+            pst_values.append(QUEEN_PIECESQUARE.get(move.from_square))
         elif piece_sym == "k":
-            pst_values.append(KING_PIECESQUARE_EG.get(move.to_square))
+            pst_values.append(KING_PIECESQUARE_EG.get(move.from_square))
         else:
             pst_values.append(0)
-    return pst_values
+    return sum(pst_values)
 
 # for every piece calculate the number of possible moves
 def total_mobility(board, color, as_value=False):
@@ -166,7 +165,7 @@ def eval_material(board, color):
     white_material, black_material = total_material(board, as_value=True)
     color_bias = 1 if color == chess.WHITE else -1
     if board.is_repetition(3):
-        return -float('inf')
+        return PIECE_VALUE[chess.KING]
     return color_bias * (white_material - black_material)
 
 def game_over_evaluation(board, color):
@@ -195,11 +194,25 @@ def endgame_evaluation(board, color):
 
     return evaluation
 
-def eval_material_and_mobility(board, color):
+def complete_eval(board, color, endgameBias=False):
     evaluation = 0
-    evaluation += evaluate_material(board, color)
-    evaluation += evaluate_mobility(board, color)
+    evaluation += evaluate_material(board, color, endgameBias)
+    evaluation += evaluate_mobility(board, color, endgameBias)
+    evaluation += evaluate_center_control(board, color, endgameBias)
+    evaluation += calc_pst(board, board.legal_moves)
+    return evaluation
 
+def eval_material_and_mobility(board, color, endgameBias=False):
+    evaluation = 0
+    evaluation += evaluate_material(board, color, endgameBias)
+    evaluation += evaluate_mobility(board, color, endgameBias)
+    return evaluation
+
+def eval_material_and_mobility_and_cc(board, color, endgameBias=False):
+    evaluation = 0
+    evaluation += evaluate_material(board, color, endgameBias)
+    evaluation += evaluate_mobility(board, color, endgameBias)
+    evaluation += evaluate_center_control(board, color, endgameBias)
     return evaluation
 '''
     board = board.copy()
@@ -243,7 +256,7 @@ def eval_material_and_mobility(board, color):
     return endgame_bias * evaluation
     '''
 
-def evaluate_mobility(board, color):
+def evaluate_mobility(board, color, endgameBias=False):
     board = board.copy()
 
     if game_over(board):
@@ -253,13 +266,13 @@ def evaluate_mobility(board, color):
     black_mobility = total_mobility(board, chess.BLACK, as_value=True)
 
     my_mobility, their_mobility = (white_mobility, black_mobility) if color else (black_mobility, white_mobility)
-
+    
     evaluation = 0
     evaluation += 0.1*(my_mobility - their_mobility)
 
     return evaluation
 
-def evaluate_material(board, color):
+def evaluate_material(board, color, endgameBias=False):
     board = board.copy()
 
     if game_over(board):
@@ -273,12 +286,25 @@ def evaluate_material(board, color):
     my_material, their_material = (white_material, black_material) if color else (black_material, white_material)
     evaluation = 0
 
+    endgame_bias = 1
+    if endgameBias:
+        is_endgame = 0 if my_material[chess.QUEEN] or their_material[chess.QUEEN] else 1
+        endgame_bias = 1/(white_material.total() + black_material.total()) * endgame_evaluation(board, color)
+        endgame_bias *= is_endgame
+
     # Evaluate Material
     evaluation += 100*(my_material[chess.QUEEN] - my_material[chess.QUEEN])
     evaluation += 9*(my_material[chess.ROOK] - my_material[chess.ROOK])
     evaluation += 5*(my_material[chess.BISHOP] - my_material[chess.BISHOP])
     evaluation += 3*(my_material[chess.KNIGHT] - my_material[chess.KNIGHT])
     evaluation += 1*(my_material[chess.PAWN] - my_material[chess.PAWN])
+    return evaluation * endgame_bias
+
+def evaluate_center_control(board, color, endgameBias=False):
+    evaluation = 0
+    white_center_control, black_center_control = center_control(board=board)
+    evaluation += 5 * white_center_control if color == chess.WHITE else 5 * black_center_control
+
     return evaluation
 
 
