@@ -14,8 +14,8 @@ ITALIAN="r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R"
 endgame="8/8/5p2/1P1K1k2/8/2r5/8/7R w - - 0 0"
 
 mate_1_endgame = "3k4/6R1/3K4/8/8/8/8/8 w - - 0 1"
-mate_2_endgame = "1k6/6R1/2K5/8/8/8/8/8 b - - 0 1 "
-game = ChessGame(mate_2_endgame, white_to_move=False)
+mate_2_endgame = "1k6/6R1/2K5/8/8/8/8/8 b - - 0 1"
+game = ChessGame(white_to_move=True)
 # game = ChessGame()
 
 white = WhiteScholarAgent()
@@ -32,8 +32,8 @@ black = BlackScholarAgent()
     return val
 """
 
-minimaxW = MinimaxAgent(chess.WHITE, eval_material_and_mobility, depth=6, iterate=True)
-minimaxB = MinimaxAgent(chess.BLACK, eval_material_and_mobility, depth=6, iterate=True)
+minimaxW = MinimaxAgent(chess.WHITE, eval_material_and_mobility, depth=4, iterate=True)
+minimaxB = MinimaxAgent(chess.BLACK, eval_material_and_mobility, depth=4, iterate=True)
 
 game.register_agent(minimaxW, True)
 game.register_agent(minimaxB, False)

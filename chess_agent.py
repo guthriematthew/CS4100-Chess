@@ -5,6 +5,7 @@ from chess_eval import order_moves
 import math
 import time
 import bisect
+import random
 
 #Abstract Class for Agents
 class Agent(metaclass=abc.ABCMeta):
@@ -43,6 +44,16 @@ class BlackScholarAgent(Agent):
         move = self.moves[self.counter]
         self.counter += 1
         return move
+
+class RandomAgent(Agent):
+
+    def __init__(self, seed=None):
+        if seed is not None:
+            random.seed(seed)
+
+    def get_next_move(self, board):
+        move = random.choice(list(board.legal_moves))
+        return move, {'move':move, 'evaluation':0, 'num_eval':0, 'time':0}
 
 class OutOfTimeException(Exception):
     "The Minimax Agent ran out of time to compute"
