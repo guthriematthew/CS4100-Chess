@@ -105,6 +105,7 @@ class ChessSimulator(object):
     
     def run_simulation(self):
         games = {}
+        f = 0
         for i in range(self.num_games):
             if self.swap_colors and i%2 == 1:
                 games_out = self.simulate_game(whiteAgent=self.white_agent2, 
@@ -121,7 +122,6 @@ class ChessSimulator(object):
                     games[key] = [games_out[key]]
                 else:
                     games[key].append(games_out[key])
-        
         output = pd.DataFrame(games)
         # for key, row in output.iterrows():
         #     self.to_pgn(row.white_agent, row.black_agent, row.moves)
@@ -138,7 +138,7 @@ class ChessSimulator(object):
         
         gameOutcome = sim_game.play_game()
         moves = sim_game.moves
-        if gameOutcome.winner:
+        if gameOutcome.winner is not None:
             if gameOutcome.winner == chess.WHITE:
                 white = 1
                 black = 0

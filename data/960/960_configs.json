@@ -1,0 +1,53 @@
+[
+    {
+        "agent1_name": "minimax_iterative",
+        "agent2_name": "stockfish",
+        "depth1": 3,
+        "depth2": null,
+        "eval1": "complete_eval",
+        "eval2": 500,
+        "num_games": 2,
+        "start_position": "rbbnqnkr/pppppppp/8/8/8/8/PPPPPPPP/RBBNQNKR w KQkq - 0 1",
+        "is_960": true,
+        "max_time1": null,
+        "max_time2": null,
+        "random_seed": 69,
+        "white_to_move": true,
+        "swap_colors": true,
+        "output_location": "./data/vs_stockfish/minimax_iterative_vs_500.csv"
+    },
+    {
+        "agent1_name": "minimax_iterative",
+        "agent2_name": "stockfish",
+        "depth1": 3,
+        "depth2": null,
+        "eval1": "complete_eval",
+        "eval2": 500,
+        "num_games": 2,
+        "start_position": "rqknbnrb/pppppppp/8/8/8/8/PPPPPPPP/RQKNBNRB w KQkq - 0 1",
+        "is_960": true,
+        "max_time1": null,
+        "max_time2": null,
+        "random_seed": 69,
+        "white_to_move": true,
+        "swap_colors": true,
+        "output_location": "./data/vs_stockfish/minimax_iterative_vs_500.csv"
+    },
+    {
+        "agent1_name": "minimax_iterative",
+        "agent2_name": "stockfish",
+        "depth1": 3,
+        "depth2": null,
+        "eval1": "complete_eval",
+        "eval2": 500,
+        "num_games": 2,
+        "start_position": "nnrbbkqr/pppppppp/8/8/8/8/PPPPPPPP/NNRBBKQR w KQkq - 0 1",
+        "is_960": true,
+        "max_time1": null,
+        "max_time2": null,
+        "random_seed": 69,
+        "white_to_move": true,
+        "swap_colors": true,
+        "output_location": "./data/vs_stockfish/minimax_iterative_vs_500.csv"
+    }
+]
