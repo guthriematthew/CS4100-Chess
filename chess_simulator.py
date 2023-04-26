@@ -123,10 +123,10 @@ class ChessSimulator(object):
                     games[key].append(games_out[key])
         
         output = pd.DataFrame(games)
-        for key, row in output.iterrows():
-            self.to_pgn(row.white_agent, row.black_agent, row.moves)
+        # for key, row in output.iterrows():
+        #     self.to_pgn(row.white_agent, row.black_agent, row.moves)
         output.to_csv(self.output_location)
-        return output
+        return games
 
 
 

@@ -2,10 +2,8 @@
 [Site "?"]
 [Date "????.??.??"]
 [Round "?"]
-[White "minimax_depth_2"]
-[Black "stockfish_2000"]
+[White "stockfish_800"]
+[Black "stockfish_1000"]
 [Result "*"]
-[FEN "1k6/6R1/2K5/8/8/8/8/8 b - - 0 1"]
-[SetUp "1"]
 
-1... Ka8 2. Kd5 Kb8 3. Re7 Kc8 4. Kd4 Kd8 5. Rh7 Kc8 6. Re7 Kd8 7. Re6 Kd7 8. Rf6 Ke7 9. Rc6 Kd7 10. Rf6 Ke7 11. Rf7+ Kxf7 *
+1. dxd5 exe3 2. exe5 Nxf3+ 3. Nxc6 Bxb5+ 4. Bxd6 cxc4+ 5. dxc4 e4+ 6. Bxe6 Qxa4+ 7. Nxe7 Bxc4+ 8. Bd7+ Qb3+ 9. Rxf8+ Ng5 10. Ng6+ Bf7 11. Kxe7 Bxg6+ 12. hxg6 Nxc3+ 13. Ke8 Ne6+ 14. Nd4 Nd8 15. Nxb3 axb3 16. Kxd8 dxd3+ 17. Ke8 Bxg5+ 18. axa6 Kxe2+ 19. Be6 Nd5+ 20. Rxb8 hxh4 21. cxc6 Nb6 22. Bc5 Be3 23. Bb4 Nc4 24. Bg4# fxf3 25. Be6 Nxe5 26. Bxb3 Nxg6 27. Rf6 h5 28. Rc8 gxg4 29. a5 Rxc1 30. a4 Bd4 31. Rd8 Bxf6 32. gxf6 Ra1 33. Kf7 Rc1 34. c5 Nf4 35. c4 h6 36. bxb5 h7 37. Rh8 d4 38. a3 bxa3 39. Bxa3 Rb1 40. b4 Ke3 41. Bc2 Ra1 42. Bb2 Ra7+ 43. Ke8 Ra8+ 44. Kf7 Ra7+ 45. Ke8 Ra8+ 46. Kf7 *

@@ -1,6 +1,6 @@
 from chess_simulator import ChessSimulator
-# from joblib import Parallel, delayed
-# import time
+from joblib import Parallel, delayed
+import time
 
 
 mate_1_endgame = "3k4/6R1/3K4/8/8/8/8/8 w - - 0 1"
@@ -15,19 +15,79 @@ SIMULATION_EVALS = ['eval_material',
 run_config = {
     'agent1_name' : 'minimax',
     'agent2_name' : 'stockfish',
-    'depth1' : 2,
+    'depth1' : 4,
     'depth2' : 4,
     'eval1': 'complete_eval',
     'eval2': 2000,
     'num_games' : 1,
-    'start_position' : mate_2_endgame,
+    'start_position' : None,
     'white_to_move':False,
     'swap_colors': True,
     'output_location':'data/initial.csv'
 }
 
-chess_sim1 = ChessSimulator(run_config)
+# chess_sim1 = ChessSimulator(run_config)
 
-g = chess_sim1.run_simulation()
+# g = chess_sim1.run_simulation()
 
-print(g)
+run_cs = [
+    {
+        'agent1_name' : 'stockfish',
+        'agent2_name' : 'stockfish',
+        'depth1' : 4,
+        'depth2' : 4,
+        'eval1': 2000,
+        'eval2': 2000,
+        'num_games' : 1,
+        'start_position' : None,
+        'white_to_move':False,
+        'swap_colors': True,
+        'output_location':'data/stockfish0.csv'
+    },
+    {
+        'agent1_name' : 'stockfish',
+        'agent2_name' : 'stockfish',
+        'depth1' : 4,
+        'depth2' : 4,
+        'eval1': 1800,
+        'eval2': 2000,
+        'num_games' : 1,
+        'start_position' : None,
+        'white_to_move':False,
+        'swap_colors': True,
+        'output_location':'data/stockfish1.csv'
+    },
+    {
+        'agent1_name' : 'stockfish',
+        'agent2_name' : 'stockfish',
+        'depth1' : 4,
+        'depth2' : 4,
+        'eval1': 1800,
+        'eval2': 2000,
+        'num_games' : 1,
+        'start_position' : None,
+        'white_to_move':False,
+        'swap_colors': True,
+        'output_location':'data/stockfish2.csv'
+    },
+    {
+        'agent1_name' : 'stockfish',
+        'agent2_name' : 'stockfish',
+        'depth1' : 4,
+        'depth2' : 4,
+        'eval1': 800,
+        'eval2': 1000,
+        'num_games' : 1,
+        'start_position' : None,
+        'white_to_move':False,
+        'swap_colors': True,
+        'output_location':'data/stockfish3.csv'
+    }
+]
+
+
+num_jobs = 1
+gs = []
+start = time.time()
+Parallel(n_jobs=num_jobs, prefer="threads")(delayed(ChessSimulator(run_c).run_simulation)(run_c) for run_c in run_cs)
+print(time.time()-start)
