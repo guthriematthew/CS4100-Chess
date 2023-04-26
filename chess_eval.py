@@ -154,9 +154,19 @@ def total_material(board, as_value=False):
         black_total = sum([PIECE_VALUE[PIECE_SYMBOLS.index(x)] for x in black_material])
         return white_total, black_total
 
+
+def center_control(board):
+    center_squares = [chess.E4, chess.E5, chess.D4, chess.D5]
+    white_center_control = sum(map(lambda x: len(board.attackers(chess.WHITE, x)), center_squares))
+    black_center_control = sum(map(lambda x: len(board.attackers(chess.BLACK, x)), center_squares))
+    return white_center_control, black_center_control
+
+
 def eval_material(board, color):
     white_material, black_material = total_material(board, as_value=True)
     color_bias = 1 if color == chess.WHITE else -1
+    if board.is_repetition(3):
+        return -float('inf')
     return color_bias * (white_material - black_material)
 
 def game_over_evaluation(board, color):
@@ -213,6 +223,10 @@ def eval_material_and_mobility(board, color):
     evaluation += 3*(my_material[chess.KNIGHT] - their_material[chess.KNIGHT])
     evaluation += 1*(my_material[chess.PAWN] - their_material[chess.PAWN])
 
+    # Evaluate Center Control
+    white_center_control, black_center_control = center_control(board=board)
+    evaluation += 5 * white_center_control if color == chess.WHITE else 10 * black_center_control
+
     # Evaluate Mobility
     evaluation += 0.1*(my_mobility - their_mobility)
     endgame_bias = 1/(white_material.total() + black_material.total()) * endgame_evaluation(board, color)
@@ -228,11 +242,3 @@ def eval_material_and_mobility(board, color):
 Eval(board) = 100*(number of white queens - number of black queens) + 9*(number of white rooks - number of black rooks) + 5*(number of white bishops - number of black bishops) + 3*(number of white knights - number of black knights) + 1*(number of white pawns - number of black pawns) + 0.1*(sum of mobility scores for white pieces - sum of mobility scores for black pieces) + 0.5*(number of safe squares for white king - number of safe squares for black king) + 0.1*(sum of center control scores for white - sum of center control scores for black)
 """
 
-
-    
-
-
-
-
-
-        

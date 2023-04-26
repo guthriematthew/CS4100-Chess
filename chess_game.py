@@ -20,6 +20,7 @@ class ChessGame(object):
         self.board.turn = white_to_move
         self.white_to_move = white_to_move
         self._agents = copy.deepcopy(STARTING_AGENTS)
+        self.moves = []
 
     def register_agent(self, agent, as_white):
         if self.num_agents == 2:
@@ -85,17 +86,18 @@ class ChessGame(object):
                 moving_agent = self._agents[chess.BLACK]
             
             move = moving_agent.get_next_move(self.board)
+            self.moves.append(move)
 
             self.make_move(moving_agent.id, move)
 
             print(self.board)
-            print(display_buffer)
+        print(display_buffer)
 
         outcome = self.board.outcome(claim_draw=True)
         result = outcome.result()
 
         print(f"The game is over, result: {result}")
-
+        print(f'Moves {self.moves}')
         return outcome
 
     def game_over(self):
@@ -115,3 +117,5 @@ class ChessGame(object):
     @property
     def agent_ids(self):
         return copy.deepcopy(self._agents)
+    
+

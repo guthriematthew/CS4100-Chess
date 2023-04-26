@@ -73,8 +73,7 @@ class MinimaxAgent(Agent):
         if self.iterate: 
             move, num_eval = self.iterative_minimax(chess_board, self.depth, alpha, beta, start)
         else:
-            color = self.color if self.depth % 2 == 0 else not self.color
-            _, move, num_eval, _ = self.minimax(chess_board, self.depth, color, alpha, beta, start)
+            _, move, num_eval, _ = self.minimax(chess_board, self.depth, self.color, alpha, beta, start)
         end = time.time()
         prefix = f"Iterative Minimax to depth {self.depth}" if self.iterate else f"Minimax to depth {self.depth}"
         print(f"{prefix} took {end-start}, and evaluated {num_eval} positions\nMove: {str(move)}")
@@ -93,8 +92,7 @@ class MinimaxAgent(Agent):
         best_move = None
         num_eval = 0
         for i in range(1, self.depth+1):
-            color = self.color if i % 2 == 0 else not self.color
-            _, best_move, new_num_eval, best_moves = self.minimax(chess_board, i, color, alpha, beta, startTime, ordered_moves=best_moves)
+            _, best_move, new_num_eval, best_moves = self.minimax(chess_board, i, self.color, alpha, beta, startTime, ordered_moves=best_moves)
             num_eval += new_num_eval
             if self.times_up(startTime):
                 return best_move, num_eval
