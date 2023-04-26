@@ -12,7 +12,7 @@ import os
 DEFAULT_DEPTH = 3
 
 if os.name == "posix":
-    STOCKFISH_PATH = "/usr/local/bin/stockfish"
+    STOCKFISH_PATH = "/opt/homebrew/opt/stockfish/bin/stockfish"
 else:
     STOCKFISH_PATH = None
 
@@ -104,7 +104,7 @@ class StockfishAgent(Agent):
         move = move_info["Move"]
         evaluation = move_info["Centipawn"]
         t_time = end-start
-        return move, {'move':move, 'evaluation':evaluation, 'num_eval':-1, 'time':t_time}
+        return {'move':move, 'evaluation':evaluation, 'num_eval':-1, 'time':t_time}
 
     def grade_move(self, chess_board, move : str, n=5):
         self.stockfish.set_fen_position(chess_board.fen())

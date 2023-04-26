@@ -91,7 +91,7 @@ class ChessGame(object):
             self.make_move(moving_agent.id, move['move'])
 
             print(self.board)
-        print(display_buffer)
+            print(display_buffer)
 
         outcome = self.board.outcome(claim_draw=True)
         result = outcome.result()

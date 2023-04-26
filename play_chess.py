@@ -33,10 +33,12 @@ black = BlackScholarAgent()
     return val
 """
 
-minimaxW = MinimaxAgent(chess.WHITE, eval_material_and_mobility, depth=4, iterate=True)
-minimaxB = MinimaxAgent(chess.BLACK, eval_material_and_mobility, depth=4, iterate=True)
+minimaxW = MinimaxAgent(chess.WHITE, eval_material_and_mobility, depth=3, iterate=True)
+minimaxB = MinimaxAgent(chess.BLACK, eval_material_and_mobility, depth=3, iterate=True)
+stockf_1000 = StockfishAgent(1000)
+stockf_1500 = StockfishAgent(1500)
 
-game.register_agent(minimaxW, True)
-game.register_agent(minimaxB, False)
+game.register_agent(minimaxW, chess.WHITE)
+game.register_agent(stockf_1000, chess.BLACK)
 game.play_game()
 
