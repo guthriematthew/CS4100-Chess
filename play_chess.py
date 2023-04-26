@@ -18,6 +18,7 @@ mate_2_endgame = "1k6/6R1/2K5/8/8/8/8/8 b - - 0 1"
 game = ChessGame(white_to_move=True)
 # game = ChessGame()
 
+
 white = WhiteScholarAgent()
 black = BlackScholarAgent()
 #stockfish = Stockfish(path="/usr/local/bin/stockfish")

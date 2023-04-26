@@ -88,7 +88,7 @@ class ChessGame(object):
             move = moving_agent.get_next_move(self.board)
             self.moves.append(move)
 
-            self.make_move(moving_agent.id, move)
+            self.make_move(moving_agent.id, move['move'])
 
             print(self.board)
         print(display_buffer)

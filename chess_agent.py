@@ -20,7 +20,10 @@ class Agent(metaclass=abc.ABCMeta):
 class HumanAgent(Agent):
 
     def get_next_move(self, board):
+        
         move = input("Make your move, in UCI Notation: ")
+        # !!! WILL NOT WORK UNLESS IN BELOW FORMAT VVV
+        # move_info = {'move':str(move), 'evaluation':v, 'num_eval':num_eval, 'time':(end-start)}
         return move
 
 class WhiteScholarAgent(Agent):
@@ -32,6 +35,8 @@ class WhiteScholarAgent(Agent):
     def get_next_move(self, board):
         move = self.moves[self.counter]
         self.counter += 1
+        # !!! WILL NOT WORK UNLESS IN BELOW FORMAT VVV
+        # move_info = {'move':str(move), 'evaluation':v, 'num_eval':num_eval, 'time':(end-start)}
         return move
 
 class BlackScholarAgent(Agent):
@@ -43,6 +48,8 @@ class BlackScholarAgent(Agent):
     def get_next_move(self, board):
         move = self.moves[self.counter]
         self.counter += 1
+        # !!! WILL NOT WORK UNLESS IN BELOW FORMAT VVV
+        # move_info = {'move':str(move), 'evaluation':v, 'num_eval':num_eval, 'time':(end-start)}
         return move
 
 class RandomAgent(Agent):
@@ -90,7 +97,8 @@ class MinimaxAgent(Agent):
         prefix = f"Iterative Minimax to depth {self.depth}" if self.iterate else f"Minimax to depth {self.depth}"
         print(f"{prefix} took {end-start}, and evaluated {num_eval} positions")
         print(f"Move: {str(move)} with score {v}")
-        return str(move)
+        move_info = {'move':str(move), 'evaluation':v, 'num_eval':num_eval, 'time':(end-start)}
+        return move_info
 
     def nextAgent(self, color):
         return not color

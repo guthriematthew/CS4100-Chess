@@ -233,9 +233,7 @@ def eval_material_and_mobility(board, color):
 
     # Evaluate Center Control
     white_center_control, black_center_control = center_control(board=board)
-    center_control_weight = 5
-    center_control_eval = center_control_weight * white_center_control if color == chess.WHITE else center_control_weight * black_center_control
-    evaluation += center_control_eval * is_endgame
+    evaluation += 5 * white_center_control if color == chess.WHITE else 10 * black_center_control
 
     # Evaluate Mobility
     evaluation += 0.1*(my_mobility - their_mobility)*is_endgame
