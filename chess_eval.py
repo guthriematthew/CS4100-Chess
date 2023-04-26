@@ -262,7 +262,7 @@ def evaluate_mobility(board, color, endgameBias=False):
     board = board.copy()
 
     if game_over(board):
-        game_over_evaluation(board, color)
+        return game_over_evaluation(board, color)
     
     white_mobility = total_mobility(board, chess.WHITE, as_value=True)
     black_mobility = total_mobility(board, chess.BLACK, as_value=True)
@@ -278,7 +278,7 @@ def evaluate_material(board, color, endgameBias=False):
     board = board.copy()
 
     if game_over(board):
-        game_over_evaluation(board, color)
+        return game_over_evaluation(board, color)
 
     white_material, black_material = total_material(board)
 
