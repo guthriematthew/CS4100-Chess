@@ -5,6 +5,7 @@ from chess_agent import *
 import random
 from chess_eval import *
 import chess.pgn
+import json
 
 VALID_AGENTS = ['stockfish', 'minimax','minimax_iterative', 'random']
 SIMULATION_EVALS = ['eval_material', 
@@ -75,6 +76,9 @@ class ChessSimulator(object):
             assert type(self.eval2_name) == int
             self.eval2 = self.eval2_name
 
+        if (self.agent1_name == 'random' or self.agent2_name == 'random') and self.random_seed is not None:
+            random.seed(self.random_seed)
+
         #FOR NOW SETTING EVAL TO MOVEMENT AND MOBILITY
         self.white_agent1 = self.get_agent(self.agent1_name, chess.WHITE, eval=self.eval1, depth=self.depth1)
         self.black_agent1 = self.get_agent(self.agent1_name, chess.BLACK, eval=self.eval1, depth=self.depth1) 
@@ -121,7 +125,7 @@ class ChessSimulator(object):
         output = pd.DataFrame(games)
         for key, row in output.iterrows():
             self.to_pgn(row.white_agent, row.black_agent, row.moves)
-        # output.to_csv(self.output_location)
+        output.to_csv(self.output_location)
         return output
 
 
@@ -201,4 +205,17 @@ class ChessSimulator(object):
         print(game)
 
 
+    @staticmethod
+    def simulate_from_file(file_path):
+        my_configs = []
+        with open(file_path) as f:
+            my_configs = json.load(f)
 
+        for config in my_configs:
+            sim = ChessSimulator(config)
+            sim.run_simulation()
+
+
+if __name__ == "__main__":
+    config_file_location = "./simulator_configs.json"
+    ChessSimulator.simulate_from_file(config_file_location)
