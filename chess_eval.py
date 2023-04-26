@@ -199,6 +199,12 @@ def endgame_evaluation(board, color):
     return evaluation
 
 def eval_material_and_mobility(board, color):
+    evaluation = 0
+    evaluation += evaluate_material(board, color)
+    evaluation += evaluate_mobility(board, color)
+
+    return evaluation
+'''
     board = board.copy()
 
     if game_over(board):
@@ -235,3 +241,54 @@ def eval_material_and_mobility(board, color):
     #evaluation = abs(white_material - black_material) * abs(white_mobility - black_mobility)
     return endgame_bias + evaluation
     #return evaluation
+
+    return endgame_bias * evaluation
+    '''
+
+def evaluate_mobility(board, color):
+    board = board.copy()
+
+    if game_over(board):
+        game_over_evaluation(board, color)
+    
+    white_mobility = total_mobility(board, chess.WHITE, as_value=True)
+    black_mobility = total_mobility(board, chess.BLACK, as_value=True)
+
+    my_mobility, their_mobility = (white_mobility, black_mobility) if color else (black_mobility, white_mobility)
+
+    evaluation = 0
+    evaluation += 0.1*(my_mobility - their_mobility)
+
+    return evaluation
+
+def evaluate_material(board, color):
+    board = board.copy()
+
+    if game_over(board):
+        game_over_evaluation(board, color)
+
+    white_material, black_material = total_material(board)
+
+    white_material = Counter([chess.Piece.from_symbol(x) for x in white_material])
+    black_material = Counter([chess.Piece.from_symbol(x) for x in black_material])
+
+    my_material, their_material = (white_material, black_material) if color else (black_material, white_material)
+    evaluation = 0
+
+    # Evaluate Material
+    evaluation += 100*(my_material[chess.QUEEN] - my_material[chess.QUEEN])
+    evaluation += 9*(my_material[chess.ROOK] - my_material[chess.ROOK])
+    evaluation += 5*(my_material[chess.BISHOP] - my_material[chess.BISHOP])
+    evaluation += 3*(my_material[chess.KNIGHT] - my_material[chess.KNIGHT])
+    evaluation += 1*(my_material[chess.PAWN] - my_material[chess.PAWN])
+    return evaluation
+
+
+
+    
+
+
+
+
+
+        
