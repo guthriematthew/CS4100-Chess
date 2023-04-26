@@ -170,7 +170,7 @@ def eval_material(board, color):
     return color_bias * (white_material - black_material)
 
 def game_over_evaluation(board, color):
-    outcome = board.outcome()
+    outcome = board.outcome(claim_draw=True)
     if outcome.termination is not None and \
         outcome.termination == chess.Termination.CHECKMATE \
         and outcome.winner == color:
@@ -179,19 +179,16 @@ def game_over_evaluation(board, color):
         return -1 * PIECE_VALUE[chess.KING]
 
 def endgame_evaluation(board, color):
-    our_king_piecesquare_eg = KING_PIECESQUARE_EG
     our_king = board.king(color)
-
-    their_king_piecesquare_eg = KING_PIECESQUARE_EG
     their_king = board.king(not color)
 
     evaluation = 0
     
     # push our king to center
-    evaluation += our_king_piecesquare_eg[our_king]
+    evaluation += KING_PIECESQUARE_EG[our_king]
 
     # push opponent king to edge
-    evaluation += -1*their_king_piecesquare_eg[their_king]
+    evaluation += -1*KING_PIECESQUARE_EG[their_king]
 
     # decrease distance between kings
     evaluation -= abs(our_king - their_king)
@@ -216,6 +213,11 @@ def eval_material_and_mobility(board, color):
 
     evaluation = 0
 
+    # Endgame Case
+    is_endgame = 0 if my_material[chess.QUEEN] or their_material[chess.QUEEN] else 1
+    endgame_bias = 1/(white_material.total() + black_material.total()) * endgame_evaluation(board, color)
+    endgame_bias *= is_endgame
+
     # Evaluate Material
     evaluation += 100*(my_material[chess.QUEEN] - their_material[chess.QUEEN])
     evaluation += 9*(my_material[chess.ROOK] - their_material[chess.ROOK])
@@ -225,13 +227,11 @@ def eval_material_and_mobility(board, color):
 
     # Evaluate Center Control
     white_center_control, black_center_control = center_control(board=board)
-    evaluation += 5 * white_center_control if color == chess.WHITE else 10 * black_center_control
+    center_control_weight = 5
+    center_control_eval = center_control_weight * white_center_control if color == chess.WHITE else center_control_weight * black_center_control
+    evaluation += center_control_eval * is_endgame
 
     # Evaluate Mobility
-    evaluation += 0.1*(my_mobility - their_mobility)
-    endgame_bias = 1/(white_material.total() + black_material.total()) * endgame_evaluation(board, color)
-    endgame_bias *= 0 if my_material[chess.QUEEN] or their_material[chess.QUEEN] else 1
-    #print(evaluation, endgame_bias, evaluation * endgame_bias)
-    #evaluation = abs(white_material - black_material) * abs(white_mobility - black_mobility)
+    evaluation += 0.1*(my_mobility - their_mobility)*is_endgame
+
     return endgame_bias + evaluation
-    #return evaluation
