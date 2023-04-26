@@ -67,6 +67,26 @@ class chess_simulator(object):
         outcomeDF['white'] = white
         outcomeDF['black'] = black
         outcomeDF['whiteAgent']
+
+    def record_quality(self, board, stockfish_elo, record_agent, opponent_agent):
+        board = board.copy()
+        stockfish_agent = StockfishAgent(stockfish_elo)
+
+        game_record = [] # Holds (board, stockfish_move, agent_move, agent_move_grade) tuples
+
+        while(not game_over(board)):
+            agent_move, agent_move_info = record_agent.get_next_move(board)
+            stockfish_move, _ = stockfish_agent.get_next_move(board)
+            agent_move_grade = stockfish_agent.grade_move(board, move)
+            game_record.append((str(board), stockfish_move, agent_move, agent_move_grade))
+            board.push(stockfish_move)
+
+            m, _ = opponent_agent.get_next_move(board)
+            board.push(m)
+
+        return game_record
+
+
         
 
 

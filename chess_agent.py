@@ -6,6 +6,15 @@ import math
 import time
 import bisect
 import random
+from stockfish import Stockfish
+import os
+
+DEFAULT_DEPTH = 3
+
+if os.name == "posix":
+    STOCKFISH_PATH = "/usr/local/bin/stockfish"
+else:
+    STOCKFISH_PATH = None
 
 #Abstract Class for Agents
 class Agent(metaclass=abc.ABCMeta):
@@ -66,11 +75,50 @@ class OutOfTimeException(Exception):
     "The Minimax Agent ran out of time to compute"
     pass
 
+class StockfishAgent(Agent):
+    
+    def __init__(self, elo, depth=None, parameters=None, is_960=False, board=None):
+        if depth is None:
+            depth = DEFAULT_DEPTH
+        if parameters is None:
+            parameters = {}
+        if is_960:
+            parameters["UCI_Chess960"] = True
+        if board is None:
+            board = chess.Board()
+        
+        self.elo = elo
+        self.depth = depth
+
+        if STOCKFISH_PATH is None:
+            raise Exception("You aren't on Max/Linux, so I don't know where Stockfish is installed")
+
+        self.stockfish = Stockfish(path=STOCKFISH_PATH, depth=depth, parameters={})
+        self.stockfish.set_fen_position(board.fen())
+
+    def get_next_move(self, chess_board):
+        self.stockfish.set_fen_position(chess_board.fen())
+        start = time.time()
+        move_info = self.stockfish.get_top_moves(1)[0]
+        end = time.time()
+        move = move_info["Move"]
+        evaluation = move_info["Centipawn"]
+        t_time = end-start
+        return move, {'move':move, 'evaluation':evaluation, 'num_eval':-1, 'time':t_time}
+
+    def grade_move(self, chess_board, move : str, n=5):
+        self.stockfish.set_fen_position(chess_board.fen())
+        top_n_moves = self.stockfish.get_top_moves(n)
+        for i, move_info in enumerate(top_n_moves):
+            if move_info['Move'] == move:
+                return i+1
+        return -1 
+
 class MinimaxAgent(Agent):
 
     def __init__(self, color, evaluationFunction, depth=None, moveTime=None, iterate=True):
         if depth is None:
-            depth = 1
+            depth = DEFAULT_DEPTH
         if moveTime is None:
             moveTime = math.inf
 
@@ -142,7 +190,7 @@ class MinimaxAgent(Agent):
 
         best_moves = []
         # Maximize for yourself
-        if color == self.color: 
+        if color == self.color:
             v = -1 * math.inf
             best_move = None
             eval_acc = 0
