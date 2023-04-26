@@ -34,8 +34,8 @@ NOT_960 = not IS_960
 WHITE_TO_MOVE = True
 BLACK_TO_MOVE = not WHITE_TO_MOVE
 
-depth1_depths = list(range(1, 4))
-depth2_depths = list(range(1, 4))
+depth1_depths = list(range(3, 4))
+depth2_depths = list(range(3, 4))
 
 start_positions = [
     (chess.STARTING_BOARD_FEN, NOT_960, WHITE_TO_MOVE)
@@ -46,7 +46,10 @@ max_time2 = None
 swap_colors = True
 white_to_move = True
 num_games = 2
-random_seed = None
+random_seed = 69
+
+def name(agent_name, depth, eval):
+    return f"./data/vs_random/{agent_name}_{depth}_{eval}"
 
 def create_config(agent1, agent2, depth1, depth2, eval1, eval2, start_position, is_960, white_to_move):
     config =     {
@@ -63,21 +66,22 @@ def create_config(agent1, agent2, depth1, depth2, eval1, eval2, start_position, 
         'max_time2' : max_time2,
         'random_seed': random_seed,
         'white_to_move' : white_to_move,
-        'swap_colors' : swap_colors
+        'swap_colors' : swap_colors,
+        'output_location': name(agent1, depth1, eval1)
     }
     return config
 
 configs = []
 
 for agent1 in VALID_AGENTS:
-    for agent2 in VALID_AGENTS:
-        if agent1 == agent2:
+    for agent2 in ['random']:
+        if agent1 == agent2 or agent1 == 'stockfish' or agent2 == 'stockfish' or agent1 == 'random':
             # Assuming we don't want the same agents to play against each other 
             continue
         for depth1 in depth1_depths:
             for depth2 in depth2_depths:
                 for eval1 in SIMULATION_EVALS:
-                    for eval2 in SIMULATION_EVALS:
+                    for eval2 in ["eval_material"]:
                         for start_position, is_960, white_to_move in start_positions:
                             config = create_config(agent1, agent2, depth1, depth2, eval1, eval2, start_position, is_960, white_to_move)
                             configs.append(config)
