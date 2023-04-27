@@ -53,7 +53,11 @@ num_games = 1
 random_seed = 69
 
 def name(agent_name, depth, eval):
+<<<<<<< Updated upstream
     return f"./data/960/{agent_name}_{depth}_{eval}.csv"
+=======
+    return f"./data/vs_random/{agent_name}_{depth}_{eval}.csv"
+>>>>>>> Stashed changes
 
 def create_config(agent1, agent2, depth1, depth2, eval1, eval2, start_position, is_960, white_to_move):
     config =     {

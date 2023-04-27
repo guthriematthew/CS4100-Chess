@@ -212,6 +212,8 @@ class ChessSimulator(object):
             my_configs = json.load(f)
 
         for config in my_configs:
+            with open(config["output_location"], 'a') as f:
+                f.write("Playing now")
             sim = ChessSimulator(config)
             sim.run_simulation()
 

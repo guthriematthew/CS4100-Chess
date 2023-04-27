@@ -65,6 +65,9 @@ class RandomAgent(Agent):
         move = random.choice(list(board.legal_moves))
         return {'move':str(move), 'evaluation':0, 'num_eval':0, 'time':0}
 
+    def __str__(self):
+        return f"RandomAgent"
+
 class OutOfTimeException(Exception):
     "The Minimax Agent ran out of time to compute"
     pass
@@ -184,12 +187,6 @@ class MinimaxAgent(Agent):
             v = self.evaluationFunction(chess_board, self.color)
             move = None
             return v, move, 1, [v, move]
-
-        if depth == self.depth and False:
-            my_moves = [x[0] for x in ordered_moves]
-            board_moves = list(chess_board.legal_moves)
-            print(my_moves)
-            print(board_moves)
 
         best_moves = []
         # Maximize for yourself
