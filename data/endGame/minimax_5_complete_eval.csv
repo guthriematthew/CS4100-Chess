@@ -1,0 +1,2 @@
+,white,black,moves,white_agent,black_agent
+0,1,0,"[{'move': 'g5f7', 'evaluation': 373.7, 'num_eval': 102050, 'time': 76.34644818305969}, {'move': 'h8g8', 'evaluation': 0, 'num_eval': 0, 'time': 0}, {'move': 'f7h6', 'evaluation': 9999999999697, 'num_eval': 37991, 'time': 30.702145099639893}, {'move': 'g8f8', 'evaluation': 0, 'num_eval': 0, 'time': 0}, {'move': 'd5f7', 'evaluation': 9999999999789, 'num_eval': 83320, 'time': 73.53819990158081}]",minimax_depth_5,<chess_agent.RandomAgent object at 0x1101cce50>

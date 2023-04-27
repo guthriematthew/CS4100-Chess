@@ -30,64 +30,10 @@ run_config = {
 
 # g = chess_sim1.run_simulation()
 
-run_cs = [
-    {
-        'agent1_name' : 'stockfish',
-        'agent2_name' : 'stockfish',
-        'depth1' : 4,
-        'depth2' : 4,
-        'eval1': 2000,
-        'eval2': 2000,
-        'num_games' : 1,
-        'start_position' : None,
-        'white_to_move':False,
-        'swap_colors': True,
-        'output_location':'data/stockfish0.csv'
-    },
-    {
-        'agent1_name' : 'stockfish',
-        'agent2_name' : 'stockfish',
-        'depth1' : 4,
-        'depth2' : 4,
-        'eval1': 1800,
-        'eval2': 2000,
-        'num_games' : 1,
-        'start_position' : None,
-        'white_to_move':False,
-        'swap_colors': True,
-        'output_location':'data/stockfish1.csv'
-    },
-    {
-        'agent1_name' : 'stockfish',
-        'agent2_name' : 'stockfish',
-        'depth1' : 4,
-        'depth2' : 4,
-        'eval1': 1800,
-        'eval2': 2000,
-        'num_games' : 1,
-        'start_position' : None,
-        'white_to_move':False,
-        'swap_colors': True,
-        'output_location':'data/stockfish2.csv'
-    },
-    {
-        'agent1_name' : 'stockfish',
-        'agent2_name' : 'stockfish',
-        'depth1' : 4,
-        'depth2' : 4,
-        'eval1': 800,
-        'eval2': 1000,
-        'num_games' : 1,
-        'start_position' : None,
-        'white_to_move':False,
-        'swap_colors': True,
-        'output_location':'data/stockfish3.csv'
-    }
-]
 
 
-num_jobs = 1
-gs = []
-start = time.time()
-Parallel(n_jobs=num_jobs, prefer="threads")(delayed(ChessSimulator(run_c).run_simulation)(run_c) for run_c in run_cs)
-print(time.time()-start)
+# num_jobs = 1
+# gs = []
+# start = time.time()
+# Parallel(n_jobs=num_jobs, prefer="threads")(delayed(ChessSimulator.run_simulation)(run_c) for run_c in run_cs)
+# print(time.time()-start)

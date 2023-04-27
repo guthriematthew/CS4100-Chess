@@ -27,7 +27,7 @@ class HumanAgent(Agent):
         move = input("Make your move, in UCI Notation: ")
         # !!! WILL NOT WORK UNLESS IN BELOW FORMAT VVV
         # move_info = {'move':str(move), 'evaluation':v, 'num_eval':num_eval, 'time':(end-start)}
-        return move
+        return {'move':str(move), 'evaluation':0, 'num_eval':1, 'time':0}
 
 class WhiteScholarAgent(Agent):
 

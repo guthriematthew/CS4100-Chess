@@ -14,7 +14,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_800.csv"
+        "output_location": "./data/960/minimax_iterative_vs_800.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -31,7 +31,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_750.csv"
+        "output_location": "./data/960/minimax_iterative_vs_750.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -48,7 +48,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_700.csv"
+        "output_location": "./data/960/minimax_iterative_vs_700.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -65,7 +65,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_650.csv"
+        "output_location": "./data/960/minimax_iterative_vs_650.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -82,7 +82,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_600.csv"
+        "output_location": "./data/960/minimax_iterative_vs_600.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -99,7 +99,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_550.csv"
+        "output_location": "./data/960/minimax_iterative_vs_550.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -116,7 +116,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_500.csv"
+        "output_location": "./data/960/minimax_iterative_vs_500.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -133,7 +133,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_450.csv"
+        "output_location": "./data/960/minimax_iterative_vs_450.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -150,7 +150,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_400.csv"
+        "output_location": "./data/960/minimax_iterative_vs_400.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -167,7 +167,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_350.csv"
+        "output_location": "./data/960/minimax_iterative_vs_350.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -184,7 +184,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_300.csv"
+        "output_location": "./data/960/minimax_iterative_vs_300.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -201,7 +201,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_250.csv"
+        "output_location": "./data/960/minimax_iterative_vs_250.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -218,7 +218,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_200.csv"
+        "output_location": "./data/960/minimax_iterative_vs_200.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -235,7 +235,7 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_150.csv"
+        "output_location": "./data/960/minimax_iterative_vs_150.csv"
     },
     {
         "agent1_name": "minimax_iterative",
@@ -252,6 +252,6 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-        "output_location": "./data/vs_stockfish/minimax_iterative_vs_100.csv"
+        "output_location": "./data/960/minimax_iterative_vs_100.csv"
     }
 ]

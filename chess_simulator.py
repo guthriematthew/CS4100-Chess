@@ -217,5 +217,5 @@ class ChessSimulator(object):
 
 
 if __name__ == "__main__":
-    config_file_location = "./simulator_configs.json"
+    config_file_location = "./data/960/960_configs.json"
     ChessSimulator.simulate_from_file(config_file_location)

@@ -34,13 +34,15 @@ NOT_960 = not IS_960
 WHITE_TO_MOVE = True
 BLACK_TO_MOVE = not WHITE_TO_MOVE
 
-depth1_depths = list(range(3, 4))
-depth2_depths = list(range(3, 4))
+depth1_depths = [5]
+depth2_depths = [5]
 
 start_positions = [
-    ("3k4/8/8/3BB3/3K4/8/8/8 w - - 0 1", NOT_960, WHITE_TO_MOVE),
+    # ("3k4/8/8/3BB3/3K4/8/8/8 w - - 0 1", NOT_960, WHITE_TO_MOVE),
+    
     ("r6k/6pp/8/3Q2N1/4K3/8/8/8 w - - 0 1", NOT_960, WHITE_TO_MOVE),
-    ("8/8/2k5/6R1/7Q/b3K3/8/8 w - - 0 1", NOT_960, WHITE_TO_MOVE),
+    ("1r5k/6pp/8/3Q2N1/3K4/8/8/8 w - - 0 1", NOT_960, WHITE_TO_MOVE),
+    # ("8/8/2k5/6R1/7Q/b3K3/8/8 w - - 0 1", NOT_960, WHITE_TO_MOVE),
     ]
 
 max_time1 = None
@@ -51,7 +53,7 @@ num_games = 1
 random_seed = 69
 
 def name(agent_name, depth, eval):
-    return f"./data/endGame/{agent_name}_{depth}_{eval}.csv"
+    return f"./data/960/{agent_name}_{depth}_{eval}.csv"
 
 def create_config(agent1, agent2, depth1, depth2, eval1, eval2, start_position, is_960, white_to_move):
     config =     {
@@ -82,7 +84,7 @@ for agent1 in VALID_AGENTS:
             continue
         for depth1 in depth1_depths:
             for depth2 in depth2_depths:
-                for eval1 in SIMULATION_EVALS:
+                for eval1 in ["complete_eval"]:
                     for eval2 in ["eval_material"]:
                         for start_position, is_960, white_to_move in start_positions:
                             config = create_config(agent1, agent2, depth1, depth2, eval1, eval2, start_position, is_960, white_to_move)
