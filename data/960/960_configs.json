@@ -252,9 +252,6 @@
         "random_seed": 69,
         "white_to_move": true,
         "swap_colors": true,
-<<<<<<< Updated upstream
-        "output_location": "./data/960/minimax_iterative_vs_100.csv"
-=======
         "output_location": "./data/960/minimax_iterative_vs_200.csv"
     },
     {
@@ -460,6 +457,5 @@
         "white_to_move": true,
         "swap_colors": true,
         "output_location": "./data/960/minimax_iterative_vs_800.csv"
->>>>>>> Stashed changes
     }
 ]
